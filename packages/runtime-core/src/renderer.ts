@@ -292,9 +292,13 @@ export const queuePostRenderEffect = __FEATURE_SUSPENSE__
 export function createRenderer<
   HostNode = RendererNode,
   HostElement = RendererElement
->(options: RendererOptions<HostNode, HostElement>) {
-  return baseCreateRenderer<HostNode, HostElement>(options)
-}
+  >(options: RendererOptions<HostNode, HostElement>) {
+    /**
+     * 注释
+     * 通过baseCreateRenderer创建并返回渲染器，该函数具有多个函数签名（重载）
+     */
+    return baseCreateRenderer<HostNode, HostElement>(options)
+  }
 
 // Separate API for creating hydration-enabled renderer.
 // Hydration logic is only used when calling this function, making it
@@ -2300,12 +2304,22 @@ function baseCreateRenderer(
     return hostNextSibling((vnode.anchor || vnode.el)!)
   }
 
+  /**
+   * 注释
+   * 将虚拟DOM转换成真实DOM并追加到宿主元素中
+   * @param vnode 接收mount阶段传入的根组件的虚拟DOM
+   * @param container 用户在app.mount中传入的宿主元素
+   * @param isSVG
+   */
   const render: RootRenderFunction = (vnode, container, isSVG) => {
+    // 在mount阶段传入的 vnode 不会是 null，所以进入patch
     if (vnode == null) {
       if (container._vnode) {
         unmount(container._vnode, null, null, true)
       }
     } else {
+      // 第一次patch属于挂载阶段(mount)而不是更新阶段
+      // 在patch方法中，虚拟DOM会被转为真实DOM并追加到宿主元素中
       patch(container._vnode || null, vnode, container, null, null, null, isSVG)
     }
     flushPostFlushCbs()

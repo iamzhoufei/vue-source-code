@@ -118,6 +118,10 @@ function createConfig(format, output, plugins = []) {
   // during a single build.
   hasTSChecked = true
 
+  /**
+   * 注释
+   * 检测需要输出的格式中是否携带运行时 => 入口文件走runtime.ts 否则走 index.ts
+   */
   let entryFile = /runtime$/.test(format) ? `src/runtime.ts` : `src/index.ts`
 
   // the compat build needs both default AND named exports. This will cause

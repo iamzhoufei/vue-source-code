@@ -174,6 +174,10 @@ export type CreateAppFunction<HostElement> = (
 
 let uid = 0
 
+/**
+ * 注释
+ * 这是创建app的根本方法
+ */
 export function createAppAPI<HostElement>(
   render: RootRenderFunction,
   hydrate?: RootHydrateFunction
@@ -188,6 +192,18 @@ export function createAppAPI<HostElement>(
     const installedPlugins = new Set()
 
     let isMounted = false
+
+    /**
+     * 最终创建并返回的app对象
+     * 包含了Vue的应用API
+     * use => 安装 Vue.js 插件
+     * mixin => 将一个 mixin 应用在整个应用范围内
+     * component => 注册或检索全局组件
+     * directive => 注册或检索全局指令
+     * mount => 接收一个容器（DOM元素），容器的 innerHTML 将被替换为应用根组件的模板渲染结果
+     * unmount => 卸载应用实例的根组件
+     * provide => 设置一个可以被注入到应用范围内所有组件中的值
+     */
 
     const app: App = (context.app = {
       _uid: uid++,
@@ -274,12 +290,18 @@ export function createAppAPI<HostElement>(
         return app
       },
 
+      /**
+       * 注释
+       * mount方法
+       */
       mount(
         rootContainer: HostElement,
         isHydrate?: boolean,
         isSVG?: boolean
       ): any {
+        // 首次执行时，并未挂载
         if (!isMounted) {
+          // 首先创建根组件的虚拟DOM - vnode
           const vnode = createVNode(
             rootComponent as ConcreteComponent,
             rootProps
@@ -295,6 +317,8 @@ export function createAppAPI<HostElement>(
             }
           }
 
+          // mount阶段的最终目的是将虚拟DOM转换成真实DOM，并渲染到宿主元素中
+          // 所以下面进入 render 函数
           if (isHydrate && hydrate) {
             hydrate(vnode as VNode<Node, Element>, rootContainer as any)
           } else {

@@ -40,6 +40,10 @@ let renderer: Renderer<Element | ShadowRoot> | HydrationRenderer
 let enabledHydration = false
 
 function ensureRenderer() {
+  /**
+   * 注释
+   * 创建渲染器renderer
+   */
   return (
     renderer ||
     (renderer = createRenderer<Node, Element | ShadowRoot>(rendererOptions))
@@ -63,7 +67,13 @@ export const hydrate = ((...args) => {
   ensureHydrationRenderer().hydrate(...args)
 }) as RootHydrateFunction
 
+/**
+ * 注释
+ * 用户调用的createApp方法
+ */
 export const createApp = ((...args) => {
+  // 获得渲染器 renderer
+  // 调用渲染器的 createApp方法获取app实例
   const app = ensureRenderer().createApp(...args)
 
   if (__DEV__) {
