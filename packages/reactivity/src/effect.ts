@@ -199,7 +199,10 @@ export function resetTracking() {
   shouldTrack = last === undefined ? true : last
 }
 
+// 跟踪对象与键的关系
 export function track(target: object, type: TrackOpTypes, key: unknown) {
+  // 首先使用map保存当前对象中的key值
+  // 每个key值对应的副作用函数依赖则使用Set保存
   if (shouldTrack && activeEffect) {
     let depsMap = targetMap.get(target)
     if (!depsMap) {
@@ -218,6 +221,7 @@ export function track(target: object, type: TrackOpTypes, key: unknown) {
   }
 }
 
+// 跟踪 依赖 与 副作用函数 之间的关系
 export function trackEffects(
   dep: Dep,
   debuggerEventExtraInfo?: DebuggerEventExtraInfo
@@ -249,6 +253,7 @@ export function trackEffects(
   }
 }
 
+// 找到拦截到的当前修改的key对应的副作用函数们
 export function trigger(
   target: object,
   type: TriggerOpTypes,
@@ -336,6 +341,7 @@ export function trigger(
   }
 }
 
+// 根据副作用函数的类型来调用不同的方法
 export function triggerEffects(
   dep: Dep | ReactiveEffect[],
   debuggerEventExtraInfo?: DebuggerEventExtraInfo

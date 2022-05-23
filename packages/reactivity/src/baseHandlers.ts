@@ -39,6 +39,7 @@ const builtInSymbols = new Set(
     .filter(isSymbol)
 )
 
+// 自定义的get方法拦截
 const get = /*#__PURE__*/ createGetter()
 const shallowGet = /*#__PURE__*/ createGetter(false, true)
 const readonlyGet = /*#__PURE__*/ createGetter(true)
@@ -81,6 +82,7 @@ function createArrayInstrumentations() {
 
 function createGetter(isReadonly = false, shallow = false) {
   return function get(target: Target, key: string | symbol, receiver: object) {
+    // 处理边界行为
     if (key === ReactiveFlags.IS_REACTIVE) {
       return !isReadonly
     } else if (key === ReactiveFlags.IS_READONLY) {
@@ -102,19 +104,24 @@ function createGetter(isReadonly = false, shallow = false) {
       return target
     }
 
+    // 判断 如果传入的target是否是数组
     const targetIsArray = isArray(target)
 
+    // 数组的处理方式
     if (!isReadonly && targetIsArray && hasOwn(arrayInstrumentations, key)) {
       return Reflect.get(arrayInstrumentations, key, receiver)
     }
 
+    // 不是数组 → 是对象 → 使用反射 读取target上指定key的值作为res
     const res = Reflect.get(target, key, receiver)
 
     if (isSymbol(key) ? builtInSymbols.has(key) : isNonTrackableKeys(key)) {
       return res
     }
 
+    // 如果是可读写的值
     if (!isReadonly) {
+      // 建立（跟踪） target，key，依赖函数 之间的关系
       track(target, TrackOpTypes.GET, key)
     }
 
@@ -128,6 +135,7 @@ function createGetter(isReadonly = false, shallow = false) {
       return shouldUnwrap ? res.value : res
     }
 
+    // 如果是对象，需要递归
     if (isObject(res)) {
       // Convert returned value into a proxy as well. we do the isObject check
       // here to avoid invalid value warning. Also need to lazy access readonly
@@ -135,6 +143,7 @@ function createGetter(isReadonly = false, shallow = false) {
       return isReadonly ? readonly(res) : reactive(res)
     }
 
+    // 最终返回 target中 key 对应的值
     return res
   }
 }
@@ -206,6 +215,11 @@ function ownKeys(target: object): (string | symbol)[] {
   return Reflect.ownKeys(target)
 }
 
+/**
+ * mutableHandlers 中定义好了拦截对象的 get/set/deleteProperty/has/ownKeys 事件
+ * 由于 ES6的 Proxy 和 Reflect，所以可以监听到vue2中无法监听到的事件
+ * 例如：删除属性 deleteProperty
+ */
 export const mutableHandlers: ProxyHandler<object> = {
   get,
   set,

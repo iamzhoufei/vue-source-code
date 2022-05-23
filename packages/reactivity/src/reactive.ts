@@ -86,16 +86,25 @@ export type UnwrapNestedRefs<T> = T extends Ref ? T : UnwrapRefSimple<T>
  * count.value // -> 1
  * ```
  */
+
+// reactive 方法签名
 export function reactive<T extends object>(target: T): UnwrapNestedRefs<T>
+
+/**
+ * reactive 方法实现
+ * @param target 接收一个继承object类型的对象
+ * @returns 返回一个响应式对象
+ */
 export function reactive(target: object) {
   // if trying to observe a readonly proxy, return the readonly version.
   if (isReadonly(target)) {
     return target
   }
+  // 返回 createReactiveObject 创建的响应式对象
   return createReactiveObject(
     target,
     false,
-    mutableHandlers,
+    mutableHandlers,  // 可变对象的处理函数（基础对象的处理函数）
     mutableCollectionHandlers,
     reactiveMap
   )
@@ -178,6 +187,15 @@ export function shallowReadonly<T extends object>(target: T): Readonly<T> {
   )
 }
 
+/**
+ * createReactiveObject 方法实现
+ * @param target 
+ * @param isReadonly 
+ * @param baseHandlers 
+ * @param collectionHandlers 
+ * @param proxyMap 
+ * @returns 
+ */
 function createReactiveObject(
   target: Target,
   isReadonly: boolean,
@@ -209,8 +227,15 @@ function createReactiveObject(
   if (targetType === TargetType.INVALID) {
     return target
   }
+
+  // 将传入的对象作为代理的目标
   const proxy = new Proxy(
     target,
+    /**
+     * 根据传入对象的类型来决定使用的 handlers
+     * TargetType.COLLECTION 集合类型（set/map） → collectionHandlers
+     * 基础对象类型 → baseHandlers
+     */
     targetType === TargetType.COLLECTION ? collectionHandlers : baseHandlers
   )
   proxyMap.set(target, proxy)

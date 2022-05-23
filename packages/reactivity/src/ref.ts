@@ -64,6 +64,8 @@ export function isRef(r: any): r is Ref {
   return !!(r && r.__v_isRef === true)
 }
 
+// ref方法
+// 接收一个单值，返回 Ref<T> （包装类）
 export function ref<T extends object>(
   value: T
 ): [T] extends [Ref] ? T : Ref<UnwrapRef<T>>
@@ -86,6 +88,7 @@ export function shallowRef(value?: unknown) {
   return createRef(value, true)
 }
 
+// 返回 RefImpl 的实例对象
 function createRef(rawValue: unknown, shallow: boolean) {
   if (isRef(rawValue)) {
     return rawValue

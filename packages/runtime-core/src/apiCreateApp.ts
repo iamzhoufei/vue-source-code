@@ -175,8 +175,7 @@ export type CreateAppFunction<HostElement> = (
 let uid = 0
 
 /**
- * 注释
- * 这是创建app的根本方法
+ * createAppAPI 创建app的根本方法
  */
 export function createAppAPI<HostElement>(
   render: RootRenderFunction,
@@ -194,8 +193,7 @@ export function createAppAPI<HostElement>(
     let isMounted = false
 
     /**
-     * 最终创建并返回的app对象
-     * 包含了Vue的应用API
+     * 最终创建并返回的app对象，包含了Vue的应用API
      * use => 安装 Vue.js 插件
      * mixin => 将一个 mixin 应用在整个应用范围内
      * component => 注册或检索全局组件
@@ -291,7 +289,6 @@ export function createAppAPI<HostElement>(
       },
 
       /**
-       * 注释
        * mount方法
        */
       mount(

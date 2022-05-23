@@ -1,0 +1,24 @@
+<script src="../../dist/vue.global.js"></script>
+
+<div id="app">
+    <div>{{data.text}}</div>
+</div>
+
+<script type="text/javascript">
+    Vue.createApp({
+        setup() {
+           const data = Vue.reactive({
+                text: 123
+           })
+
+           Vue.watch(() => data.text, (value) => {
+               console.log(value)
+                console.log('text changed')
+           });
+
+           return {
+               data
+           };
+        }
+    }).mount('#app')
+</script>

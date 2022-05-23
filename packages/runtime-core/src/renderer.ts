@@ -294,8 +294,7 @@ export function createRenderer<
   HostElement = RendererElement
   >(options: RendererOptions<HostNode, HostElement>) {
     /**
-     * 注释
-     * 通过baseCreateRenderer创建并返回渲染器，该函数具有多个函数签名（重载）
+     * baseCreateRenderer创建并返回渲染器，该函数具有多个函数签名（重载）
      */
     return baseCreateRenderer<HostNode, HostElement>(options)
   }
@@ -2305,8 +2304,7 @@ function baseCreateRenderer(
   }
 
   /**
-   * 注释
-   * 将虚拟DOM转换成真实DOM并追加到宿主元素中
+   * render 方法，将虚拟DOM转换成真实DOM并追加到宿主元素中
    * @param vnode 接收mount阶段传入的根组件的虚拟DOM
    * @param container 用户在app.mount中传入的宿主元素
    * @param isSVG
